@@ -1,4 +1,5 @@
 class CommentsController < ApplicationController
+  before_action :authenticate_user!
   
   def create
     @comment = Comment.new(comment_params)
@@ -6,9 +7,15 @@ class CommentsController < ApplicationController
       redirect_to prototype_path(@comment.prototype)
     else
       @prototype = @comment.prototype
-      @comments = @prototype.comments
+      @comments = @prototype.comments.includes(:user)
       render "prototypes/show"
     end
+  end
+
+  def destroy
+    comment = Comment.find_by(id: params[:id], prototype_id: params[:prototype_id])
+    comment.destroy
+    redirect_to prototype_path(comment.prototype)
   end
 
   private
