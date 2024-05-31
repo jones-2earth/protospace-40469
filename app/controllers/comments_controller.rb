@@ -12,12 +12,6 @@ class CommentsController < ApplicationController
     end
   end
 
-  def destroy
-    comment = Comment.find_by(id: params[:id], prototype_id: params[:prototype_id])
-    comment.destroy
-    redirect_to prototype_path(comment.prototype)
-  end
-
   private
   def comment_params
     params.require(:comment).permit(:text).merge(user_id: current_user.id, prototype_id: params[:prototype_id])
